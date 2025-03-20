@@ -7,10 +7,10 @@
     </template>
 
     <template #center>
-      <RouterLink to="/users" v-if="['super_user'].includes(authstore.getRole)">
+      <RouterLink to="/users" v-if="['super_admin'].includes(authstore.getRole)">
         <Button icon="pi pi-users" v-tooltip.bottom="'Users'" :severity="isActiveLink('users') ? '' : 'secondary'" />
       </RouterLink>
-      <RouterLink to="/artists" v-if="['super_user', 'artist_manager'].includes(authstore.getRole)">
+      <RouterLink to="/artists" v-if="['super_admin', 'artist_manager'].includes(authstore.getRole)">
         <Button icon="pi pi-images" v-tooltip.bottom="'Artists'"
           :severity="isActiveLink('artists') ? '' : 'secondary'" />
       </RouterLink>
@@ -24,7 +24,6 @@
     </template>
   </Toolbar>
 </template>
-
 
 <script setup lang="ts">
 import router from '@/router';

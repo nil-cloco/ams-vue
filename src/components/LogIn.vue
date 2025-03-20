@@ -1,7 +1,7 @@
 <template>
   <section class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-200 to-cyan-200 dark:from-gray-600 dark:to-gray-400">
 
-    <Card class="max-h-screen overflow-auto dark:!bg-gray-700">
+    <Card class="auth-container overflow-auto dark:!bg-gray-700">
       <template #title>
         <h4 class="font-semibold text-xl text-center">Artist Management System</h4>
       </template>
@@ -28,7 +28,7 @@
             <Button type="submit"><span class="font-semibold">Login</span></Button>
             <span class="block text-center">
               <span>Don't have an accout yet ? </span>
-              <RouterLink to="#"> Register Here</RouterLink>
+              <RouterLink to="/signup"> Register Here</RouterLink>
             </span>
           </div>
         </Form>

@@ -21,6 +21,17 @@ class AuthService extends ApiService {
     })
   }
 
+  async register(payload) {
+    return new Promise((resolve, reject) => {
+      const url = '/signup'
+      this.apiClient.post(url, { user: payload }).then(res => {
+        router.push('/login')
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
+
   logout() {
     this.authStore.resetUser()
     router.go(0)

@@ -14,12 +14,23 @@
   gap: 0.25rem;
 }
 
-@media only screen and (max-width: 600px) {
+.auth-container {
+  max-height: 90vh;
+}
+
+@media only screen and (max-width: 767px) {
   .form-row{
     flex-direction: column;
   }
 
   .form-field{
     max-width: 100% !important;
+  }
+
+  .auth-container {
+    max-height: unset !important;
+    height: 100vh;
+    width: 100vw;
+    border-radius: 0px !important;
   }
 }
