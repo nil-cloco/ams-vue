@@ -3,7 +3,7 @@
     <GenericTable resource="artists" title="Artists" ref="tableRef" @new="dialogRef.open()">
 
       <template #action-buttons>
-        <Button class="p-button p-button-secondary p-mr-2" v-tooltip.bottom="'Import'" size="small">
+        <Button class="p-button p-button-secondary p-mr-2" v-tooltip.bottom="'Import'" size="small" @click="importDialogRef.open()">
           <i class="pi pi-file-import"></i>
           <span class="hidden sm:block">Import</span>
         </Button><Button class="p-button p-button-secondary p-mr-2" v-tooltip.bottom="'Export'" size="small"
@@ -48,6 +48,8 @@
     </GenericTable>
 
     <ArtistDetail @afterClose="afterDialogClosed" ref="dialogRef"></ArtistDetail>
+
+    <ImportDialog @afterClose="afterDialogClosed" ref="importDialogRef"></ImportDialog>
   </div>
 </template>
 
@@ -55,6 +57,7 @@
 <script setup lang="ts">
 import ArtistDetail from '@/components/ArtistDetail.vue';
 import GenericTable from '@/components/GenericTable.vue';
+import ImportDialog from '@/components/importDialog.vue';
 import ArtistService from '@/services/ArtistService';
 import { getDateInFormat, getGenderLabel } from '@/utils/utils';
 import { Button, Column } from 'primevue';
@@ -66,6 +69,7 @@ const apiService = new ArtistService()
 const tableRef = ref()
 
 const dialogRef = ref();
+const importDialogRef = ref();
 
 const afterDialogClosed = (dataSaved: boolean) => {
   if (dataSaved) {

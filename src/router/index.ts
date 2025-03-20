@@ -41,7 +41,6 @@ const router = createRouter({
       path: '/users',
       name: 'users',
       beforeEnter: (to, from, next) => {
-        console.log(useAuthStore().getRole)
         if (['super_admin'].includes(useAuthStore().getRole)) next()
         else next(from.path)
       },
@@ -70,7 +69,6 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-  console.log(to, from, next)
   if (useAuthStore().isAuthenticated) {
     if (to.path == "/login" || to.path == "/signup") next("/")
     else next()
