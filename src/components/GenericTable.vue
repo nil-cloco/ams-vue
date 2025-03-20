@@ -9,7 +9,8 @@
           <Button class="p-button p-button-primary p-mr-2 " v-tooltip.bottom="`Add ${props.title}`" @click="emit('new')"
             size="small">
             <i class="pi pi-plus"></i>
-            Add {{ props.title }}
+            <span class="hidden sm:block">Add {{ props.title }}</span>
+
           </Button>
         </div>
       </div>

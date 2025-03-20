@@ -5,11 +5,11 @@
       <template #action-buttons>
         <Button class="p-button p-button-secondary p-mr-2" v-tooltip.bottom="'Import'" size="small">
           <i class="pi pi-file-import"></i>
-          Import
+          <span class="hidden sm:block">Import</span>
         </Button><Button class="p-button p-button-secondary p-mr-2" v-tooltip.bottom="'Export'" size="small"
           @click="apiService.exportCsv()">
           <i class="pi pi-file-export"></i>
-          Export
+          <span class="hidden sm:block">Export</span>
         </Button>
       </template>
 

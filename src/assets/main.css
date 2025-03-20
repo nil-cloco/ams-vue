@@ -2,10 +2,6 @@
 
 @import 'primeicons/primeicons.css';
 
-html {
-  overflow: hidden;
-}
-
 .form-row {
   display: flex;
   gap: 0.5rem;
@@ -18,23 +14,12 @@ html {
   gap: 0.25rem;
 }
 
-/* #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
-} */
-
-/* a,
-.green {
-  text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
-  transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
+@media only screen and (max-width: 600px) {
+  .form-row{
+    flex-direction: column;
   }
-} */
+
+  .form-field{
+    max-width: 100% !important;
+  }
+}
