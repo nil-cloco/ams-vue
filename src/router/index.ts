@@ -1,34 +1,55 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import { useAuthStore } from '@/stores/authstore'
-import LogIn from '@/components/LogIn.vue'
+import { useAuthStore } from '@/stores/authStore'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
       name: 'home',
-      component: LogIn,
+      redirect: () => {
+        switch (useAuthStore().getRole) {
+          case 'super_admin':
+            return "/users"
+          case 'artist_manager':
+            return "/artists"
+          default:
+            return "/musics"
+        }
+      }
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: import('@/components/LogIn.vue')
     },
     {
       path: '/users',
       name: 'users',
-      component: () => import('../views/UserView.vue'),
+      beforeEnter: (to, from, next) => {
+        if(['super_user'].includes(useAuthStore().getRole)) next()
+        else next (from.path)
+      },
+      component: () => import('@/views/UserView.vue'),
     },
     {
       path: '/artists',
       name: 'artists',
-      component: () => import('../views/ArtistView.vue'),
+      beforeEnter: (to, from, next) => {
+        if(['super_user', 'artist_manager'].includes(useAuthStore().getRole)) next()
+        else next (from.path)
+      },
+      component: () => import('@/views/ArtistView.vue'),
     },
     {
       path: '/musics/:artist_id?',
       name: 'musics',
-      component: () => import('../views/MusicView.vue'),
+      component: () => import('@/views/MusicView.vue'),
     },
     {
       path: '/:catchAll(.*)',
       name: 'not-found',
-      component: HomeView,
+      redirect: "/"
     },
   ],
 })
@@ -36,12 +57,11 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
   if (authStore.isAuthenticated) {
-    if (to.path !== '/') next()
-    else next('/users')
-  } else if (to.path !== '/') {
-    next('/')
+    if (to.path == "/login") next("/")
+    else next()
   } else {
-    next()
+    if (to.path != '/login') next()
+    else next("/login")
   }
 })
 

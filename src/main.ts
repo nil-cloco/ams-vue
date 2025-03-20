@@ -30,6 +30,6 @@ app.use(ConfirmationService)
 app.use(ToastService)
 app.directive('tooltip', Tooltip)
 
-// setup router and mount app to #app
 app.use(router)
+
 app.mount('#app')

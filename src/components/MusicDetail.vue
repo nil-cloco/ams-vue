@@ -29,7 +29,7 @@
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label for="album_name" class="font-semibold">Album Name</label>
+          <label for="album_name" class="font-semibold">Album Name *</label>
           <InputText id="album_name" autocomplete="off" name="album_name" fluid
             :invalid="$form.album_name?.invalid && (formSubmitted || $form.album_name?.touched)" />
           <Message severity="error" variant="simple" size="small"
@@ -58,8 +58,8 @@
 </template>
 
 <script setup lang="ts">
+import ApiService from '@/services/ApiService';
 import ArtistService from '@/services/ArtistService';
-import MusicService from '@/services/MusicService';
 import { getGenreOptions } from '@/utils/utils';
 import { musicValidator } from '@/validators/musicValidator';
 import { Form, type FormSubmitEvent } from '@primevue/forms';
@@ -71,10 +71,10 @@ const visible = ref(false);
 const dataSaved = ref(false);
 const formSubmitted = ref(false);
 const musicId = ref()
-const apiService = new MusicService()
+const apiService = new ApiService('musics')
 const artistApiService = new ArtistService()
 const formRef = ref();
-const artists = ref([])
+const artists = ref()
 
 const emit = defineEmits(['afterClose'])
 
@@ -94,7 +94,7 @@ const props = defineProps({
 })
 
 const getArtistData = async () => {
-  artists.value = await artistApiService.getAll(1, 100)
+  artists.value = await artistApiService.getArtistOptions();
 }
 
 const initializeData = () => {
@@ -108,14 +108,17 @@ const initializeData = () => {
 
 const open = async (id: number | null) => {
   musicId.value = id;
-  if (id) {
-    detailsData.value = await apiService.getById(id)
-  } else {
-    initializeData();
-  }
   dataSaved.value = false;
   formSubmitted.value = false;
-  visible.value = true;
+  if (id) {
+    await apiService.getById(id).then((res) => {
+      detailsData.value = res;
+      visible.value = true;
+    }).catch(console.error)
+  } else {
+    initializeData();
+    visible.value = true;
+  }
 }
 
 defineExpose({
@@ -128,11 +131,19 @@ const submitForm = async (event: FormSubmitEvent) => {
   const data = event.values;
   if (musicId.value) {
     data['id'] = musicId.value;
-    await apiService.update(data.id, data);
+    await apiService.update(data.id, data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error);
   } else {
-    await apiService.create(data);
+    await apiService.create(data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error);
   }
-  dataSaved.value = true;
+}
+
+const closeDialog = () => {
   visible.value = false;
   initializeData();
 }

@@ -28,7 +28,7 @@
         </div>
 
         <div class="form-field max-w-38">
-          <label for="dob" class="font-semibold">Date of Birth</label>
+          <label for="dob" class="font-semibold">Date of Birth *</label>
           <DatePicker name="dob" id="dob" dateFormat="yy-mm-dd" :maxDate="today"
             :invalid="$form.dob?.invalid && (formSubmitted || $form.dob?.touched)">
           </DatePicker>
@@ -41,7 +41,7 @@
       </div>
       <div class="form-row">
         <div class="form-field">
-          <label for="no_of_albums_released" class="font-semibold">Albums released</label>
+          <label for="no_of_albums_released" class="font-semibold">Albums released *</label>
           <InputNumber id="no_of_albums_released" class="flex-auto" autocomplete="off" name="no_of_albums_released"
             :invalid="$form.no_of_albums_released?.invalid && (formSubmitted || $form.no_of_albums_released?.touched)" />
           <Message severity="error" variant="simple" size="small"
@@ -50,7 +50,7 @@
           </Message>
         </div>
         <div class="form-field max-w-38">
-          <label for="first_release_year" class="font-semibold">First release year</label>
+          <label for="first_release_year" class="font-semibold">First release year *</label>
           <DatePicker name="first_release_year" id="first_release_year" dateFormat="yy" :maxDate="today" ref="dpRef"
             @year-change="onYearChange($event)" @focus="dpRef.switchToYearView($event)"
             :invalid="$form.first_release_year?.invalid && (formSubmitted || $form.first_release_year?.touched)">
@@ -111,7 +111,7 @@ const initializeArtistData = () => {
     gender: "",
     address: "",
     first_release_year: "",
-    no_of_albums_released: 0
+    no_of_albums_released: ""
   }
 }
 
@@ -123,30 +123,40 @@ watch(visible, val => {
 
 const open = async (id: number | null) => {
   artistId.value = id;
-  if (id) {
-    const info = await apiService.getById(id)
-    artistData.value = { ...info, dob: new Date(info.dob), first_release_year: getDateByYear(info.first_release_year) };
-  } else {
-    initializeArtistData();
-  }
   dataSaved.value = false;
   formSubmitted.value = false;
-  visible.value = true;
+  if (id) {
+    await apiService.getById(id).then((res) => {
+      artistData.value = { ...res, dob: res['dob'] ? new Date(res['dob']) : null , first_release_year: getDateByYear(res["first_release_year"]) };
+      visible.value = true;
+    }).catch(console.error)
+  } else {
+    initializeArtistData();
+    visible.value = true;
+  }
 }
 
 const submitForm = async (event: FormSubmitEvent) => {
   formSubmitted.value = true;
   if (!event.valid) return;
   const data = event.values;
-  data.dob = data.dob.toString();
+  data.dob = data.dob?.toString() || null;
   data.first_release_year = data.first_release_year?.getFullYear() || null;
   if (artistData.value.id) {
     data['id'] = artistData.value.id;
-    await apiService.update(data.id, data);
+    await apiService.update(data.id, data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error);
   } else {
-    await apiService.create(data);
+    await apiService.create(data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error);
   }
-  dataSaved.value = true;
+}
+
+const closeDialog = () => {
   visible.value = false;
   initializeArtistData();
 }

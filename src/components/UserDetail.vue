@@ -155,6 +155,8 @@ const initializeUserData = () => {
   }
 }
 
+// const toast = useToast();
+
 const emit = defineEmits(['afterClose'])
 
 watch(visible, val => {
@@ -163,15 +165,17 @@ watch(visible, val => {
 
 const open = async (id: number | null) => {
   userId.value = id;
-  if (id) {
-    const info = await apiService.getById(id)
-    userData.value = { ...info, password: '********', confirm_password: '********', dob: new Date(info.dob) };
-  } else {
-    initializeUserData();
-  }
   dataSaved.value = false;
   formSubmitted.value = false;
-  visible.value = true;
+  if (id) {
+    await apiService.getById(id).then((res) => {
+      userData.value = { ...res, password: '********', confirm_password: '********', dob: res['dob'] ? new Date(res['dob']) : null };
+      visible.value = true;
+    }).catch(console.error)
+  } else {
+    initializeUserData();
+    visible.value = true;
+  }
 }
 
 const submitForm = async (event: FormSubmitEvent) => {
@@ -180,16 +184,24 @@ const submitForm = async (event: FormSubmitEvent) => {
   const data = event.values;
 
   delete data.confirm_password;
-  data.dob = data.dob.toLocaleDateString();
+  data.dob = data.dob?.toDateString() || null;
 
   if (userData.value.id) {
     data['id'] = userData.value.id;
     delete data.password;
-    await apiService.update(data.id, data);
+    await apiService.update(data.id, data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error)
   } else {
-    await apiService.create(data);
+    await apiService.create(data).then(() => {
+      dataSaved.value = true;
+      closeDialog();
+    }).catch(console.error)
   }
-  dataSaved.value = true;
+}
+
+const closeDialog = () => {
   visible.value = false;
   initializeUserData();
 }

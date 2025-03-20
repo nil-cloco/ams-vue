@@ -1,17 +1,24 @@
-import { useAuthStore } from '@/stores/authstore'
+import { useAuthStore } from '@/stores/authStore'
 import ApiService from './ApiService'
 import router from '@/router'
 
 class AuthService extends ApiService {
+
   private authStore = useAuthStore()
+
   async login(payload) {
-    const url = '/login'
-    const res = await this.apiClient.post(url, { user: payload })
-    const user = res.data.data || {}
-    const token = res.headers['authorization'].split(' ')[1] || ''
-    this.authStore.setToken(token)
-    this.authStore.setUser(user)
-    router.go(0)
+    return new Promise((resolve, reject) => {
+      const url = '/login'
+      this.apiClient.post(url, { user: payload }).then(res => {
+        const user = res.data.data || {}
+        const token = res.headers['authorization'].split(' ')[1] || ''
+        this.authStore.setToken(token)
+        this.authStore.setUser(user)
+        router.go(0)
+      }).catch(err => {
+        reject(err)
+      })
+    })
   }
 
   logout() {

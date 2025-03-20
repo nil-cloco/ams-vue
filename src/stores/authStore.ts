@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const getUser = computed(() => user.value)
   const getToken = computed(() => token.value)
+  const getRole = computed(() => user.value?.role || "")
   const isAuthenticated = computed(() => token.value != null && user.value['id'] != null)
 
   function setToken(newToken) {
@@ -30,6 +31,7 @@ export const useAuthStore = defineStore('auth', () => {
     getUser,
     isAuthenticated,
     getToken,
+    getRole,
     setToken,
     setUser,
     resetUser,

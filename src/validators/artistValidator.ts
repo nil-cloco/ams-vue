@@ -11,9 +11,8 @@ export const artistValidator = zodResolver(
     dob: z
       .union([
         z
-          .string()
-          .length(0)
-          .transform(() => undefined),
+        .string()
+        .min(1, "Invalid input"),
         z.coerce.date().max(new Date(), 'Date of birth must be in the past'),
       ])
       .optional(),
@@ -25,15 +24,16 @@ export const artistValidator = zodResolver(
       .union([
         z
           .string()
-          .length(0)
-          .transform(() => undefined),
+          .min(1, "Invalid input"),
         z.coerce.date().max(new Date(), 'Release year must be in the past'),
       ])
       .optional(),
-    no_of_albums_released: z
-      .number()
-      .int()
-      .nonnegative('Number of albums must be 0 or more')
-      .optional(),
+    no_of_albums_released: z.union([
+      z
+        .number()
+        .min(1, "Number of albums must be 1 or more")
+        .int("Invadlid number"),
+      z.string().min(1, "Album released is requied")
+    ])
   }),
 )

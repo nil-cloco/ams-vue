@@ -1,10 +1,18 @@
 <script setup lang="ts">
-import { Button, ConfirmDialog, Toast } from 'primevue';
+import { useUiStore } from '@/stores/uiStore';
+import { Button, ConfirmDialog, Toast, useToast } from 'primevue';
+import { watch } from 'vue';
 
+const toast = useToast()
+const uiStore = useUiStore()
+
+watch(() => uiStore.toastRef, value => {
+  toast.add(value);
+})
 </script>
 
 <template>
-  <Toast></Toast>
+  <Toast position="bottom-center"></Toast>
   <ConfirmDialog></ConfirmDialog>
   <ConfirmDialog group="headless">
     <template #container="{ message, acceptCallback, rejectCallback }">

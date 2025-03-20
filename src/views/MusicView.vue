@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full w-full overflow-hidden gap-4">
-    <GenericTable resource="musics" :service="musicService" title="Musics" ref="tableRef" @new="dialogRef.open()"
+    <GenericTable resource="musics" title="Musics" ref="tableRef" @new="dialogRef.open()"
       :extra-get-params="route.params">
       <Column field="id" header="Id" />
       <Column field="title" header="Title" />
@@ -38,7 +38,6 @@
 <script setup lang="ts">
 import GenericTable from '@/components/GenericTable.vue';
 import MusicDetail from '@/components/MusicDetail.vue';
-import MusicService from '@/services/MusicService';
 import { getDateInFormat, getGenreLabel } from '@/utils/utils';
 import { Button, Column } from 'primevue';
 import { onMounted, ref } from 'vue';
@@ -47,20 +46,14 @@ import { useRoute } from 'vue-router';
 const tableRef = ref()
 const dialogRef = ref();
 
-const musicService = new MusicService();
-
 const route = useRoute();
 
 const artist_id = ref();
 
 onMounted(() => {
-  try {
-    let id = route.params['artist_id'];
-    if (typeof id == 'object') id = id[0];
-    artist_id.value = parseInt(id)
-  } catch (error) {
-    console.log(error)
-  }
+  let id = route.params['artist_id'];
+  if (typeof id == 'object') id = id[0];
+  artist_id.value = parseInt(id)
 })
 
 const afterDialogClosed = (dataSaved: boolean) => {

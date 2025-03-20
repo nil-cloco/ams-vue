@@ -7,10 +7,10 @@
     </template>
 
     <template #center>
-      <RouterLink to="/users">
+      <RouterLink to="/users" v-if="['super_user'].includes(authstore.getRole)">
         <Button icon="pi pi-users" v-tooltip.bottom="'Users'" :severity="isActiveLink('users') ? '' : 'secondary'" />
       </RouterLink>
-      <RouterLink to="/artists">
+      <RouterLink to="/artists" v-if="['super_user', 'artist_manager'].includes(authstore.getRole)">
         <Button icon="pi pi-images" v-tooltip.bottom="'Artists'"
           :severity="isActiveLink('artists') ? '' : 'secondary'" />
       </RouterLink>
@@ -28,13 +28,13 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { useAuthStore } from '@/stores/authstore';
+import { useAuthStore } from '@/stores/authStore';
 import { Button, Toolbar, useConfirm } from 'primevue';
 import { RouterLink, useRoute } from 'vue-router';
 
 const isActiveLink = (routePath: string) => {
   const route = useRoute();
-  const path = route.path.split('/').filter(_ => _)[0]
+  const path = route.path.split('/').filter(Boolean)[0]
   return path === routePath;
 }
 
@@ -60,10 +60,7 @@ const onLogout = () => {
     accept: () => {
       authstore.resetUser();
       router.push("/")
-    },
-    reject: () => {
-      console.log("logout cancel")
-    },
+    }
   });
 };
 </script>

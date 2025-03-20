@@ -1,9 +1,7 @@
 <template>
-  <section class="min-h-screen flex flex-col justify-center items-center gap-4">
-    <h3 class="font-semibold text-2xl">
+  <section class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-tr from-blue-200 to-cyan-200 dark:from-gray-600 dark:to-gray-400">
 
-    </h3>
-    <Card class="max-h-screen overflow-auto">
+    <Card class="max-h-screen overflow-auto dark:!bg-gray-700">
       <template #title>
         <h4 class="font-semibold text-xl text-center">Artist Management System</h4>
       </template>
@@ -44,13 +42,15 @@
 import InputText from 'primevue/inputtext'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
-import { Card, useToast } from 'primevue'
+import { Card } from 'primevue'
 import { Form, type FormSubmitEvent } from '@primevue/forms'
 import AuthService from '@/services/AuthService'
+import { useUiStore } from '@/stores/uiStore'
 
-const toast = useToast()
 
 const authService = new AuthService('/auth');
+
+const uiStore = useUiStore();
 
 const initialData = {
   email: "",
@@ -59,11 +59,10 @@ const initialData = {
 
 const login = async (event: FormSubmitEvent) => {
   const payload = event.values;
-  console.log(payload)
   if (payload.email?.trim() && payload.password?.trim) {
     authService.login(payload)
   } else {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Invalid Email or Password', life: 1000 });
+    uiStore.showToast("Error", "Please enter email and password")
   }
 
 }
@@ -84,3 +83,4 @@ a,
   }
 }
 </style>
+

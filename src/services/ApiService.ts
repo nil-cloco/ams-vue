@@ -1,78 +1,82 @@
-import axios, { type AxiosInstance } from 'axios'
+import { usePaginationStore } from '@/stores/paginationStore'
+import { useUiStore } from '@/stores/uiStore';
+import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 
 class ApiService {
   protected apiClient: AxiosInstance
   protected resource: string
+  protected paginationStore = usePaginationStore()
+  uiStore = useUiStore()
 
   constructor(resource: string) {
     this.apiClient = axios
     this.resource = resource
   }
 
-  async getAll(page: number | null = null, limit: number | null = 10) {
-    try {
-      let url: string = `/${this.resource}`
-      const params: string[] = []
 
-      if (page !== null) {
-        params.push(`page=${page}`)
-      }
-      if (limit !== null) {
-        params.push(`limit=${limit}`)
-      }
+  getAll(page: number | null = null, limit: number | null = 10, extraParams = {}) {
+    return new Promise((resolve, reject) => {
+      const url: string = `/${this.resource}`
+      const params = [
+        page !== null ? `page=${page}` : null,
+        limit !== null ? `limit=${limit}` : null,
+        ...Object.keys(extraParams).map((key) =>
+          extraParams[key] ? `${key}=${extraParams[key]}` : null,
+        ),
+      ].filter(Boolean).join('&')
 
-      if (params.length > 0) {
-        url += '/?' + params.join('&')
-      }
-
-      const response = await this.apiClient.get(url)
-      localStorage.setItem('x-total-count', response.headers['x-total-count'])
-      localStorage.setItem('x-page-items', response.headers['x-page-items'])
-      return response.data
-    } catch (error) {
-      console.error('Error fetching data:', error)
-      throw error
-    }
+      this.apiClient
+        .get(url + `/?${params}`)
+        .then((response) => {
+          this.paginationStore.setPageCount(parseInt(response.headers['x-total-count']))
+          this.paginationStore.setPageSize(parseInt(response.headers['x-page-items']))
+          resolve(response.data)
+        })
+        .catch((error) => {
+          reject(error.response)
+        })
+    })
   }
 
-  async getById(id: number) {
-    try {
-      const response = await this.apiClient.get(`/${this.resource}/${id}`)
-      return response.data
-    } catch (error) {
-      console.error('Error fetching data:', error)
-      throw error
-    }
+  getById(id: number) {
+    return new Promise<object>((resolve, reject) => {
+      this.apiClient.get(`/${this.resource}/${id}`).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 
-  async create(payload: unknown) {
-    try {
-      const response = await this.apiClient.post(`/${this.resource}`, payload)
-      return response.data
-    } catch (error) {
-      console.error('Error creating data:', error)
-      throw error
-    }
+  create(payload: unknown) {
+
+    return new Promise((resolve, reject) => {
+      this.apiClient.post(`/${this.resource}`, payload).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 
-  async update(id: number, payload: unknown) {
-    try {
-      const response = await this.apiClient.put(`/${this.resource}/${id}`, payload)
-      return response.data
-    } catch (error) {
-      console.error('Error updating data:', error)
-      throw error
-    }
+  update(id: number, payload: unknown) {
+    return new Promise((resolve, reject) => {
+      this.apiClient.put(`/${this.resource}/${id}`, payload).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 
-  async delete(id: number) {
-    try {
-      const response = await this.apiClient.delete(`/${this.resource}/${id}`)
-      return response.data
-    } catch (error) {
-      console.error('Error deleting data:', error)
-      throw error
-    }
+  delete(id: number) {
+    return new Promise((resolve, reject) => {
+      this.apiClient.delete(`/${this.resource}/${id}`).then(response => {
+        resolve(response.data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
   }
 }
 

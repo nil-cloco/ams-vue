@@ -27,7 +27,8 @@
         '960px': 'FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink',
         '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
         default: 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown '
-      }" :rows="pageSize" :totalRecords="total" :rows-per-page-options="[10, 20, 30]" @page="changePage($event)">
+      }" :rows="paginationStore.getPageSize" :totalRecords="paginationStore.getPageCount"
+        :rows-per-page-options="[10, 20, 30]" @page="changePage($event)">
       </Paginator>
     </template>
   </Card>
@@ -39,6 +40,7 @@ import { Button, Card, DataTable, Paginator, type PageState } from 'primevue';
 import { onMounted, ref } from 'vue';
 
 import { useConfirm } from "primevue/useconfirm";
+import { usePaginationStore } from '@/stores/paginationStore';
 
 const props = defineProps({
   resource: {
@@ -62,9 +64,8 @@ const props = defineProps({
 const confirm = useConfirm();
 const data = ref()
 const page = ref(0)
-const total = ref()
-const pageSize = ref(10)
-let apiService
+let apiService: ApiService
+const paginationStore = usePaginationStore()
 
 const emit = defineEmits<{ new: [] }>()
 
@@ -75,19 +76,18 @@ onMounted(async () => {
 
 const changePage = (event: PageState) => {
   page.value = event.page
-  pageSize.value = event.rows
+  paginationStore.setPageSize(event.rows)
   getData();
 }
 
 const getData = async () => {
-  data.value = await apiService.getAll(page.value + 1, pageSize.value, [props.extraGetParams])
-  total.value = parseInt(localStorage.getItem('x-total-count') || '0')
-  pageSize.value = parseInt(localStorage.getItem('x-page-items') || '10')
+  data.value = await apiService.getAll(page.value + 1, paginationStore.getPageSize, props.extraGetParams || {}).catch(console.error)
 }
 
 const deleteResource = async (data: { id?: number }) => {
-  await apiService.delete(data.id || 0);
-  getData();
+  await apiService.delete(data.id || 0).then(() => {
+    getData()
+  }).catch(console.error)
 }
 
 const onDelete = (data: { id?: number, message?: string }) => {
@@ -107,10 +107,7 @@ const onDelete = (data: { id?: number, message?: string }) => {
     },
     accept: () => {
       deleteResource(data)
-    },
-    reject: () => {
-      console.log("delete cancel")
-    },
+    }
   });
 };
 

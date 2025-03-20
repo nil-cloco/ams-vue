@@ -43,7 +43,7 @@ import GenericTable from '@/components/GenericTable.vue';
 import { getDateInFormat, getGenderLabel, getRoleSeverity } from '@/utils/utils';
 import { Button, Column, Tag } from 'primevue';
 import UserDetail from '@/components/UserDetail.vue';
-import { useAuthStore } from '@/stores/authstore';
+import { useAuthStore } from '@/stores/authStore';
 
 const authStore = useAuthStore();
 const tableRef = ref()

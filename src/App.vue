@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import NavBar from '@/components/NavBar.vue';
-import { useAuthStore } from '@/stores/authstore';
+import { useAuthStore } from '@/stores/authStore';
 import PrimeViewComponents from './components/PrimeViewComponents.vue';
 const authStore = useAuthStore()
 </script>
