@@ -10,7 +10,7 @@ const authStore = useAuthStore()
   <PrimeViewComponents></PrimeViewComponents>
   <div class="sm:flex flex-col h-screen w-screen gap-4 overflow-auto sm:overflow-hidden">
     <NavBar v-if="authStore.isAuthenticated"></NavBar>
-    <div class="flex-1 overflow-hidden">
+    <div class="flex-1 overflow-hidden flex flex-col">
       <RouterView :key="$route.fullPath"></RouterView>
     </div>
   </div>

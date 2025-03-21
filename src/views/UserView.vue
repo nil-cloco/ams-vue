@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full w-full overflow-hidden gap-4">
     <UserDetail @afterClose="afterDialogClosed" ref="dialogRef"></UserDetail>
-    <UsersTable :dialogRef="dialogRef" ref="tableRef" :readonly="true"></UsersTable>
+    <UsersTable :dialogRef="dialogRef" ref="tableRef"></UsersTable>
   </div>
 </template>
 

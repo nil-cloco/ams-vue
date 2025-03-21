@@ -16,7 +16,7 @@ const router = createRouter({
       redirect: () => {
         switch (useAuthStore().getRole) {
           case 'super_admin':
-            return "/users"
+            return "/dashboard"
           case 'artist_manager':
             return "/artists"
           default:
@@ -44,6 +44,15 @@ const router = createRouter({
         else next(from.path)
       },
       component: () => import('@/views/UserView.vue'),
+    },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      beforeEnter: (to, from, next) => {
+        if (['super_admin'].includes(useAuthStore().getRole)) next()
+        else next(from.path)
+      },
+      component: () => import('@/views/DashboardView.vue'),
     },
     {
       path: '/artists',

@@ -12,7 +12,7 @@ import ConfirmationService from 'primevue/confirmationservice'
 import Tooltip from 'primevue/tooltip'
 
 import router from './router'
-import { ToastService } from 'primevue'
+import { Ripple, ToastService } from 'primevue'
 
 const app = createApp(App)
 
@@ -25,10 +25,12 @@ app.use(PrimeVue, {
   theme: {
     preset: Aura,
   },
+  ripple: true
 })
 app.use(ConfirmationService)
 app.use(ToastService)
 app.directive('tooltip', Tooltip)
+app.directive('ripple', Ripple);
 
 app.use(router)
 

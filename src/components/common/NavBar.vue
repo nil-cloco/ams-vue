@@ -7,6 +7,9 @@
     </template>
 
     <template #center>
+      <RouterLink to="/dashboard" v-if="['super_admin'].includes(authstore.getRole)">
+        <Button icon="pi pi-objects-column" v-tooltip.bottom="'Dashboard'" :severity="isActiveLink('dashboard') ? '' : 'secondary'" />
+      </RouterLink>
       <RouterLink to="/users" v-if="['super_admin'].includes(authstore.getRole)">
         <Button icon="pi pi-users" v-tooltip.bottom="'Users'" :severity="isActiveLink('users') ? '' : 'secondary'" />
       </RouterLink>

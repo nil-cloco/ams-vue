@@ -126,6 +126,7 @@ import { Form, type FormSubmitEvent } from '@primevue/forms';
 import { Button, DatePicker, Dialog, InputText, Message, Password, Select } from 'primevue';
 import ApiService from '@/services/ApiService';
 import { useAuthStore } from '@/states/authStore';
+import { useUiStore } from '@/states/uiStore';
 
 const visible = ref(false);
 const dataSaved = ref(false);
@@ -134,6 +135,7 @@ const userData = ref()
 const userId = ref()
 const apiService = new ApiService("users")
 const currentUserId = useAuthStore().getUserId;
+const uiStore = useUiStore()
 
 const header = computed(() => {
   if(!userId.value) return "Add new user"
@@ -163,6 +165,10 @@ const emit = defineEmits(['afterClose'])
 
 watch(visible, val => {
   if (!val) emit('afterClose', dataSaved.value)
+})
+
+watch(dataSaved, val => {
+  if(val) uiStore.showToast("Saved", "User saved successfully", "success")
 })
 
 const open = async (id: number | null) => {

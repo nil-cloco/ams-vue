@@ -2,7 +2,7 @@
   <Dialog v-model:visible="visible" modal header="Import artists" :style="{ width: '50rem' }">
     <div class=" flex flex-col gap-6 ">
       <FileUpload ref="fileupload" mode="basic" name="file" :url="`${BaseUrl}artists/import`" accept=".csv"
-        :maxFileSize="1000000" @upload="onUpload" :multiple="false" @beforeSend="beforeSend" />
+        :maxFileSize="1000000" @upload="onUpload" :multiple="false" @beforeSend="beforeSend" @error="onUploadError"/>
       <Button label="Upload" @click="upload" severity="secondary"></Button>
     </div>
   </Dialog>
@@ -49,5 +49,17 @@ const onUpload = () => {
 const beforeSend = (request: XMLHttpRequest) => {
   request['xhr'].setRequestHeader('Authorization', `Bearer ${authStore.getToken}`);
   return request
+}
+
+const onUploadError = (e) => {
+  let error = "Error: Error while importing artists";
+  try {
+    error = JSON.parse(e.xhr?.response).error
+  } catch (e) {
+    console.error(e)
+  }
+
+  const [header, message] = error.split(':')
+  uiStore.showToast(header, message, "error")
 }
 </script>

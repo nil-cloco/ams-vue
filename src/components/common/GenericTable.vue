@@ -41,6 +41,7 @@ import { onMounted, ref } from 'vue';
 
 import { useConfirm } from "primevue/useconfirm";
 import { usePaginationStore } from '@/states/paginationStore';
+import { useUiStore } from '@/states/uiStore';
 
 const props = defineProps({
   resource: {
@@ -70,6 +71,7 @@ const data = ref()
 const page = ref(0)
 let apiService: ApiService
 const paginationStore = usePaginationStore()
+const uiStore = useUiStore()
 
 const emit = defineEmits<{ new: [] }>()
 
@@ -90,6 +92,7 @@ const getData = async () => {
 
 const deleteResource = async (data: { id?: number }) => {
   await apiService.delete(data.id || 0).then(() => {
+    uiStore.showToast("Deleted", `Record id ${data.id} deleted from ${apiService.resource}`, 'info')
     getData()
   }).catch(console.error)
 }

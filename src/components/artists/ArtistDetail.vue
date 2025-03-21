@@ -93,6 +93,7 @@ import { Form, type FormSubmitEvent } from '@primevue/forms';
 import { Button, DatePicker, Dialog, InputNumber, InputText, Message, Select, type DatePickerYearChangeEvent } from 'primevue';
 import ApiService from '@/services/ApiService';
 import { artistValidator } from '@/validators/artistValidator';
+import { useUiStore } from '@/states/uiStore';
 
 const visible = ref(false);
 const dataSaved = ref(false);
@@ -102,6 +103,7 @@ const artistId = ref()
 const apiService = new ApiService("artists")
 const formRef = ref();
 const dpRef = ref();
+const uiStore = useUiStore();
 
 const initializeArtistData = () => {
   artistData.value = {
@@ -119,6 +121,10 @@ const emit = defineEmits(['afterClose'])
 
 watch(visible, val => {
   if (!val) emit('afterClose', dataSaved.value)
+})
+
+watch(dataSaved, val => {
+  if(val) uiStore.showToast("Saved", "Artist saved successfully", "success")
 })
 
 const open = async (id: number | null) => {

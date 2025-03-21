@@ -60,6 +60,7 @@
 <script setup lang="ts">
 import ApiService from '@/services/ApiService';
 import ArtistService from '@/services/ArtistService';
+import { useUiStore } from '@/states/uiStore';
 import { getGenreOptions } from '@/utils/utils';
 import { musicValidator } from '@/validators/musicValidator';
 import { Form, type FormSubmitEvent } from '@primevue/forms';
@@ -75,11 +76,16 @@ const apiService = new ApiService('musics')
 const artistApiService = new ArtistService()
 const formRef = ref();
 const artists = ref()
+const uiStore = useUiStore()
 
 const emit = defineEmits(['afterClose'])
 
 watch(visible, val => {
   if (!val) emit('afterClose', dataSaved.value)
+})
+
+watch(dataSaved, val => {
+  if(val) uiStore.showToast("Saved", "Music saved successfully", "success")
 })
 
 onMounted(() => {

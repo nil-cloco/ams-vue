@@ -4,8 +4,8 @@ import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 
 class ApiService {
   protected apiClient: AxiosInstance
-  protected resource: string
   protected paginationStore = usePaginationStore()
+  readonly resource: string
   uiStore = useUiStore()
 
   constructor(resource: string) {
