@@ -6,7 +6,7 @@
         {{ props.title }}
         <div class="flex gap-2">
           <slot name="action-buttons"></slot>
-          <Button class="p-button p-button-primary p-mr-2 " v-tooltip.bottom="`Add ${props.title}`" @click="emit('new')"
+          <Button class="p-button p-button-primary p-mr-2 " v-tooltip.bottom="`Add ${props.title}`" @click="emit('new')" v-if="!props.readonly"
             size="small">
             <i class="pi pi-plus"></i>
             <span class="hidden sm:block">Add {{ props.title }}</span>
@@ -28,7 +28,7 @@
         '1300px': 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink',
         default: 'FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown '
       }" :rows="paginationStore.getPageSize" :totalRecords="paginationStore.getPageCount"
-        :rows-per-page-options="[10, 20, 30]" @page="changePage($event)">
+        :rows-per-page-options="[10, 25, 50, 100]" @page="changePage($event)">
       </Paginator>
     </template>
   </Card>
@@ -40,7 +40,7 @@ import { Button, Card, DataTable, Paginator, type PageState } from 'primevue';
 import { onMounted, ref } from 'vue';
 
 import { useConfirm } from "primevue/useconfirm";
-import { usePaginationStore } from '@/stores/paginationStore';
+import { usePaginationStore } from '@/states/paginationStore';
 
 const props = defineProps({
   resource: {
@@ -57,6 +57,10 @@ const props = defineProps({
   },
   extraGetParams: {
     type: Object,
+    required: false
+  },
+  readonly: {
+    type: Boolean,
     required: false
   }
 });

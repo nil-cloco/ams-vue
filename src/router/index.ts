@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/states/authStore'
 const authGuard = (to, from, next) => {
   if (useAuthStore().isAuthenticated) {
     next("/")
@@ -28,13 +27,13 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
-      component: import('@/components/LogIn.vue'),
+      component:() => import('@/views/LoginView.vue'),
       beforeEnter: authGuard
     },
     {
       path: '/signup',
       name: 'signup',
-      component: import('@/components/SignUp.vue'),
+      component:() => import('@/views/SignupView.vue'),
       beforeEnter: authGuard
     },
     {

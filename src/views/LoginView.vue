@@ -45,7 +45,7 @@ import Button from 'primevue/button'
 import { Card } from 'primevue'
 import { Form, type FormSubmitEvent } from '@primevue/forms'
 import AuthService from '@/services/AuthService'
-import { useUiStore } from '@/stores/uiStore'
+import { useUiStore } from '@/states/uiStore'
 
 
 const authService = new AuthService('/auth');
@@ -60,7 +60,7 @@ const initialData = {
 const login = async (event: FormSubmitEvent) => {
   const payload = event.values;
   if (payload.email?.trim() && payload.password?.trim) {
-    authService.login(payload)
+    authService.login(payload).then(() => console.log("LOGGED IN"))
   } else {
     uiStore.showToast("Error", "Please enter email and password")
   }

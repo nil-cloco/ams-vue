@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/states/authStore'
 import ApiService from './ApiService'
 import router from '@/router'
 

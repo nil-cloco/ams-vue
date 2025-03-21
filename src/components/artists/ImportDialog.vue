@@ -9,8 +9,8 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/authStore';
-import { useUiStore } from '@/stores/uiStore';
+import { useAuthStore } from '@/states/authStore';
+import { useUiStore } from '@/states/uiStore';
 import axios from 'axios';
 import { Button, Dialog, FileUpload } from 'primevue';
 import { ref, watch } from 'vue';

@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import router from '@/router';
-import { useAuthStore } from '@/stores/authStore';
+import { useAuthStore } from '@/states/authStore';
 import { Button, Toolbar, useConfirm } from 'primevue';
 import { RouterLink, useRoute } from 'vue-router';
 

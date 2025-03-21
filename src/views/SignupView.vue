@@ -35,10 +35,10 @@
               </Message>
             </div>
 
-            <div class="form-field max-w-38">
+            <div class="form-field min-w-38">
               <label for="gender" class="font-semibold">Gender *</label>
               <Select name="gender" :options="getGenderOptions()" optionLabel="label" option-value="value"
-                placeholder="Gender" :invalid="$form.gender?.invalid && (formSubmitted || $form.gender?.touched)" />
+                placeholder="Gender" :invalid="$form.gender?.invalid && (formSubmitted || $form.gender?.touched)" fluid/>
               <Message severity="error" variant="simple" size="small"
                 :class="$form.gender?.invalid && (formSubmitted || $form.gender?.dirty) ? 'visible' : 'invisible'">
                 {{ $form.gender?.errors[0]?.message || 'test' }}

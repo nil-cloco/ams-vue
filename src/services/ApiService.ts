@@ -1,5 +1,5 @@
-import { usePaginationStore } from '@/stores/paginationStore'
-import { useUiStore } from '@/stores/uiStore';
+import { usePaginationStore } from '@/states/paginationStore'
+import { useUiStore } from '@/states/uiStore';
 import axios, { type AxiosInstance, type AxiosResponse } from 'axios'
 
 class ApiService {

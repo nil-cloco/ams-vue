@@ -17,7 +17,6 @@ class ArtistService extends ApiService {
   }
 
   async exportCsv() {
-
     return new Promise((resolve, reject) => {
       const url = `/${this.resource}/export`
       this.apiClient.get(url).then(res => {

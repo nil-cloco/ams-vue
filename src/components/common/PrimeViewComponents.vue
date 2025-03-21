@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUiStore } from '@/stores/uiStore';
+import { useUiStore } from '@/states/uiStore';
 import { Button, ConfirmDialog, Toast, useToast } from 'primevue';
 import { watch } from 'vue';
 

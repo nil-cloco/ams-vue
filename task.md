@@ -30,3 +30,11 @@
 1. Add CRUD for music
 2. Add Authentication
 3. Add confirmation dialogs
+
+## Task Update
+
+### 20 March 2025
+
+1. Implement Import/Export for artists
+2. Implement RBAC for Vue app
+3. Handle Responsiveness for smaller screens

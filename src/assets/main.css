@@ -15,7 +15,7 @@
 }
 
 .auth-container {
-  max-height: 90vh;
+  min-width: 400px;
 }
 
 @media only screen and (max-width: 767px) {
@@ -28,7 +28,6 @@
   }
 
   .auth-container {
-    max-height: unset !important;
     height: 100vh;
     width: 100vw;
     border-radius: 0px !important;

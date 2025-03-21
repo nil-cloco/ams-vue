@@ -1,8 +1,8 @@
-import { useAuthStore } from '@/stores/authStore'
+import { useAuthStore } from '@/states/authStore'
 import axios from 'axios'
 import router from '@/router'
 import { useToast } from 'primevue'
-import { useUiStore } from '@/stores/uiStore'
+import { useUiStore } from '@/states/uiStore'
 import { promise } from 'zod'
 
 export default function setupInterceptors() {
@@ -29,6 +29,10 @@ export default function setupInterceptors() {
     function (error) {
       if (error.response.status < 200 || error.response.status >= 300) {
         uiStore.showToast(error.response.statusText, error.response.data['error'] || error.response.data)
+        if(error.response.status == 401) {
+          authStore.resetUser();
+          router.go(0)
+        }
       }
       return Promise.reject(error.response)
     },

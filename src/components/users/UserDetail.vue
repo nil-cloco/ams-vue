@@ -1,12 +1,6 @@
 <template>
-  <Dialog v-model:visible="visible" modal
-    :header="(userData?.first_name || userData?.last_Name) ? `${userData.first_name} ${userData.last_name}` : 'Add Artist'"
-    :style="{ width: '50rem' }">
+  <Dialog v-model:visible="visible" modal class="w-4xl" :header>
     <Form v-slot="$form" :initialValues="userData" :resolver="userValidator" class="flex flex-col" @submit="submitForm">
-      <span class="text-surface-500 dark:text-surface-400 block mb-4">
-        {{ userData.id ? "Edit user data" : "Add new user" }}
-      </span>
-
       <div class="form-row">
         <div class="form-field">
           <label for="firstname" class="font-semibold">First Name *</label>
@@ -14,7 +8,7 @@
             :invalid="$form.first_name?.invalid && (formSubmitted || $form.first_name?.touched)" />
           <Message severity="error" variant="simple" size="small"
             :class="$form.first_name?.invalid && (formSubmitted || $form.first_name?.dirty) ? 'visible' : 'invisible'">
-            {{ $form.first_name?.errors[0]?.message || 'test' }}
+            {{ $form.first_name?.errors[0]?.message || 'test' }}header
           </Message>
         </div>
 
@@ -51,7 +45,7 @@
         <div class="form-field max-w-44">
           <label for="role" class="font-semibold">Role *</label>
           <Select name="role" :options="getRoleOptions()" optionLabel="label" option-value="value"
-            placeholder="Select role" :invalid="$form.role?.invalid && (formSubmitted || $form.role?.touched)">
+            placeholder="Select role" :invalid="$form.role?.invalid && (formSubmitted || $form.role?.touched)" :disabled="currentUserId == userId">
           </Select>
           <Message severity="error" variant="simple" size="small"
             :class="$form.role?.invalid && (formSubmitted || $form.role?.dirty) ? 'visible' : 'invisible'">
@@ -126,11 +120,12 @@
 
 <script setup lang="ts">
 import { userValidator } from '@/validators/userValidator';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { getGenderOptions, getRoleOptions, today } from '@/utils/utils';
 import { Form, type FormSubmitEvent } from '@primevue/forms';
 import { Button, DatePicker, Dialog, InputText, Message, Password, Select } from 'primevue';
 import ApiService from '@/services/ApiService';
+import { useAuthStore } from '@/states/authStore';
 
 const visible = ref(false);
 const dataSaved = ref(false);
@@ -138,6 +133,15 @@ const formSubmitted = ref(false);
 const userData = ref()
 const userId = ref()
 const apiService = new ApiService("users")
+const currentUserId = useAuthStore().getUserId;
+
+const header = computed(() => {
+  if(!userId.value) return "Add new user"
+  else {
+    const name = (userData.value?.first_name || userData.value?.last_name) ? `${userData.value?.first_name} ${userData.value?.last_name}` : "";
+    return `Edit user Data | ${name}`
+  }
+})
 
 const initializeUserData = () => {
   userData.value = {
@@ -154,8 +158,6 @@ const initializeUserData = () => {
     confirm_password: ""
   }
 }
-
-// const toast = useToast();
 
 const emit = defineEmits(['afterClose'])
 
